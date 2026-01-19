@@ -8,6 +8,9 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.90.1",
+    "@tailwindcss/postcss": "^4.1.18",
+    "lucide-react": "^0.562.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
