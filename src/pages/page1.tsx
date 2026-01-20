@@ -29,7 +29,7 @@ export default function Page1({ onNavigate }: PageProps) {
     <div className="relative w-screen h-screen overflow-hidden">
       <video
         ref={videoRef}
-        src="/ocean background.mp4"
+        src="/background.mp4"
         className="absolute inset-0 w-full h-full object-cover"
         loop
         playsInline
