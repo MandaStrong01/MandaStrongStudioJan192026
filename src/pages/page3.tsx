@@ -1,10 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import AuthModal from "../components/AuthModal";
 
 interface PageProps {
   onNavigate: (page: number) => void;
 }
 
 export default function Page3({ onNavigate }: PageProps) {
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+
   useEffect(() => {
     const videos = document.querySelectorAll("video");
     videos.forEach(v => {
@@ -13,11 +17,16 @@ export default function Page3({ onNavigate }: PageProps) {
     });
   }, []);
 
+  const handleAuthClick = (mode: 'login' | 'register') => {
+    setAuthMode(mode);
+    setShowAuthModal(true);
+  };
+
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
       <div className="flex justify-center gap-6 py-8">
-        <button className="bg-black text-white font-bold px-6 py-3 rounded-lg border-2 border-white hover:bg-gray-800 transition-all">Login</button>
-        <button className="bg-black text-white font-bold px-6 py-3 rounded-lg border-2 border-white hover:bg-gray-800 transition-all">Register</button>
+        <button onClick={() => handleAuthClick('login')} className="bg-black text-white font-bold px-6 py-3 rounded-lg border-2 border-white hover:bg-gray-800 transition-all">Login</button>
+        <button onClick={() => handleAuthClick('register')} className="bg-black text-white font-bold px-6 py-3 rounded-lg border-2 border-white hover:bg-gray-800 transition-all">Register</button>
       </div>
 
       <div className="flex flex-col md:flex-row justify-center gap-8 px-8 flex-1 items-center">
@@ -39,6 +48,10 @@ export default function Page3({ onNavigate }: PageProps) {
         <button onClick={() => onNavigate(1)} className="bg-black text-white font-bold px-8 py-3 rounded-lg border-2 border-white hover:bg-gray-800 transition-all">Back</button>
         <button onClick={() => onNavigate(3)} className="bg-black text-white font-bold px-8 py-3 rounded-lg border-2 border-white hover:bg-gray-800 transition-all">Next</button>
       </div>
+
+      {showAuthModal && (
+        <AuthModal mode={authMode} onClose={() => setShowAuthModal(false)} />
+      )}
 
       <footer className="py-6 text-center text-gray-400 text-sm">
         © MandaStrong Studio
