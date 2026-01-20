@@ -1,88 +1,88 @@
 import { useState } from 'react';
+import { AuthProvider } from './contexts/AuthContext';
+
+import Page1 from './pages/page1';
+import Page2 from './pages/page2';
+import Page3 from './pages/page3';
+import Page4 from './pages/page4';
+import Page5 from './pages/page5';
+import Page6 from './pages/page6';
+import Page7 from './pages/page7';
+import Page8 from './pages/page8';
+import Page9 from './pages/page9';
+import Page10 from './pages/page10';
+import Page11 from './pages/page11';
+import Page12 from './pages/page12';
+import Page13 from './pages/page13';
+import Page14 from './pages/page14';
+import Page15 from './pages/page15';
+import Page16 from './pages/page16';
+import Page17 from './pages/page17';
+import Page18 from './pages/page18';
+import Page19 from './pages/page19';
+import Page20 from './pages/page20';
+import Page21 from './pages/page21';
+import AssetLibrary from './components/AssetLibrary';
 
 export default function App() {
-  const [page, setPage] = useState(1);
-  const [mins, setMins] = useState(90);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [showAssetLibrary, setShowAssetLibrary] = useState(false);
+  const [assetMode, setAssetMode] = useState<'upload' | 'create'>('upload');
+  const [selectedTool, setSelectedTool] = useState('');
 
-  const nav = (n: number) => {
-    if (n >= 1 && n <= 21) {
-      setPage(n);
-      window.scrollTo(0, 0);
-    }
+  const handleNavigate = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo(0, 0);
   };
 
-  return (
-    <div className="min-h-screen bg-black text-white font-black uppercase pb-24">
-      {/* HEADER NAV */}
-      <div className="sticky top-0 z-50 flex justify-between items-center px-8 py-4 border-b-4 border-purple-600 bg-black/95">
-        <span className="text-purple-600 text-xl">MANDASTRONG STUDIO</span>
-        <div className="flex gap-3">
-          <button
-            onClick={() => nav(page - 1)}
-            className="bg-black text-white border-2 border-purple-600 px-8 py-3 rounded-lg text-lg font-bold hover:bg-purple-900 transition-all"
-          >
-            BACK
-          </button>
-          <button
-            onClick={() => nav(page + 1)}
-            className="bg-black text-white border-2 border-purple-600 px-8 py-3 rounded-lg text-lg font-bold hover:bg-purple-900 transition-all"
-          >
-            NEXT
-          </button>
+  const handleOpenAssetPage = (toolName: string, mode: 'upload' | 'create') => {
+    setSelectedTool(toolName);
+    setAssetMode(mode);
+    setShowAssetLibrary(true);
+  };
+
+  const handleCloseAssetPage = () => {
+    setShowAssetLibrary(false);
+    setSelectedTool('');
+  };
+
+  if (showAssetLibrary) {
+    return (
+      <AuthProvider>
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+          <AssetLibrary
+            toolName={selectedTool}
+            mode={assetMode}
+            onBack={handleCloseAssetPage}
+          />
         </div>
-      </div>
+      </AuthProvider>
+    );
+  }
 
-      {/* MAIN CONTENT */}
-      <div className="flex flex-col items-center justify-center pt-5">
-        {page === 1 ? (
-          /* PAGE 1: VIDEO BACKGROUND + IMAGE OVERLAY */
-          <div className="relative w-full flex justify-center">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="fixed inset-0 w-full h-full object-cover -z-10"
-            >
-              <source src="/mandastrong_avatar_background_70s.mp4" type="video/mp4" />
-            </video>
-            <img src="/image1.png" alt="Splash Page" className="w-full max-w-5xl" />
-            <div className="absolute bottom-[20%] flex gap-5">
-              <button
-                onClick={() => nav(3)}
-                className="bg-black text-white border-2 border-purple-600 px-12 py-6 rounded-lg text-2xl font-bold hover:bg-purple-900 transition-all"
-              >
-                START
-              </button>
-            </div>
-          </div>
-        ) : (
-          /* PAGES 2-21: IMAGE DISPLAY */
-          <div className="relative">
-            <img src={`/image${page}.png`} alt={`Page ${page}`} className="w-full max-w-5xl" />
-
-            {/* PAGE 13: DURATION SLIDER OVERLAY */}
-            {page === 13 && (
-              <div className="absolute top-[55%] w-full text-center">
-                <div className="text-9xl font-bold text-purple-600">{mins} MIN</div>
-                <input
-                  type="range"
-                  min="0"
-                  max="180"
-                  value={mins}
-                  onChange={(e) => setMins(Number(e.target.value))}
-                  className="w-[70%] h-5 cursor-pointer"
-                />
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* FOOTER */}
-      <div className="fixed bottom-0 left-0 w-full py-4 bg-black/95 border-t-4 border-purple-600 text-center text-sm font-bold z-50">
-        MANDASTRONG1 2025 ~ AUTHOR OF "DOXY THE SCHOOL BULLY"
-      </div>
-    </div>
+  return (
+    <AuthProvider>
+      {currentPage === 0 && <Page1 onNavigate={handleNavigate} />}
+      {currentPage === 1 && <Page2 onNavigate={handleNavigate} />}
+      {currentPage === 2 && <Page3 onNavigate={handleNavigate} />}
+      {currentPage === 3 && <Page4 onNavigate={handleNavigate} onOpenAssetPage={handleOpenAssetPage} />}
+      {currentPage === 4 && <Page5 onNavigate={handleNavigate} onOpenAssetPage={handleOpenAssetPage} />}
+      {currentPage === 5 && <Page6 onNavigate={handleNavigate} onOpenAssetPage={handleOpenAssetPage} />}
+      {currentPage === 6 && <Page7 onNavigate={handleNavigate} onOpenAssetPage={handleOpenAssetPage} />}
+      {currentPage === 7 && <Page8 onNavigate={handleNavigate} onOpenAssetPage={handleOpenAssetPage} />}
+      {currentPage === 8 && <Page9 onNavigate={handleNavigate} onOpenAssetPage={handleOpenAssetPage} />}
+      {currentPage === 9 && <Page10 onNavigate={handleNavigate} />}
+      {currentPage === 10 && <Page11 onNavigate={handleNavigate} />}
+      {currentPage === 11 && <Page12 onNavigate={handleNavigate} />}
+      {currentPage === 12 && <Page13 onNavigate={handleNavigate} />}
+      {currentPage === 13 && <Page14 onNavigate={handleNavigate} />}
+      {currentPage === 14 && <Page15 onNavigate={handleNavigate} />}
+      {currentPage === 15 && <Page16 onNavigate={handleNavigate} />}
+      {currentPage === 16 && <Page17 onNavigate={handleNavigate} />}
+      {currentPage === 17 && <Page18 onNavigate={handleNavigate} />}
+      {currentPage === 18 && <Page19 onNavigate={handleNavigate} />}
+      {currentPage === 19 && <Page20 onNavigate={handleNavigate} />}
+      {currentPage === 20 && <Page21 onNavigate={handleNavigate} />}
+    </AuthProvider>
   );
 }
