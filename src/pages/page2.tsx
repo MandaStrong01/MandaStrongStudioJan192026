@@ -18,7 +18,7 @@ export default function Page2({ onNavigate }: PageProps) {
     <div className="relative w-screen h-screen overflow-hidden">
       <video
         ref={videoRef}
-        src="/mandastrong_avatar_background_70s.mp4"
+        src="/ocean background.mp4"
         className="absolute inset-0 w-full h-full object-cover"
         loop
         playsInline
