@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Folder, Film, Music, Image as ImageIcon, FileText } from 'lucide-react';
+import { Search, Folder, Film, Music, Image as ImageIcon, FileText, ArrowLeft, Upload, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 
@@ -12,7 +12,13 @@ interface MediaFile {
   created_at: string;
 }
 
-export default function AssetLibrary() {
+interface AssetLibraryProps {
+  toolName: string;
+  mode: 'upload' | 'create';
+  onBack: () => void;
+}
+
+export default function AssetLibrary({ toolName, mode, onBack }: AssetLibraryProps) {
   const { user } = useAuth();
   const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -65,7 +71,33 @@ export default function AssetLibrary() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen p-8 space-y-6">
+      <div className="flex items-center gap-4 mb-6">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 bg-black/30 hover:bg-black/50 text-white font-bold px-6 py-3 rounded-lg transition-all border border-purple-500"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          Back
+        </button>
+        <div className="flex-1">
+          <h1 className="text-3xl font-bold text-white">{toolName}</h1>
+          <p className="text-purple-400 flex items-center gap-2 mt-1">
+            {mode === 'upload' ? (
+              <>
+                <Upload className="w-4 h-4" />
+                Upload Mode
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4" />
+                Create with AI Mode
+              </>
+            )}
+          </p>
+        </div>
+      </div>
+
       <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" />
