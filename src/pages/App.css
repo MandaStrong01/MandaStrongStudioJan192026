@@ -71,20 +71,6 @@ button:hover {
   border-radius: 8px;
 }
 
-.auth-container {
-  display: flex;
-  justify-content: space-around;
-  margin: 20px 0;
-}
-
-.auth-box {
-  width: 40%;
-  background: #111;
-  padding: 20px;
-  border-radius: 8px;
-  border: 2px solid #8a2be2;
-}
-
 input {
   display: block;
   width: 90%;
@@ -93,16 +79,4 @@ input {
   background: #000;
   color: white;
   border: 1px solid #333;
-}
-
-.plan-card {
-  background: #111;
-  padding: 20px;
-  margin: 10px;
-  border: 2px solid #333;
-  border-radius: 10px;
-}
-
-.plan-card.highlight {
-  border: 2px solid #8a2be2;
 }
