@@ -1,72 +1,49 @@
-import { useState } from 'react';
-import Page1 from './pages/page1';
-import Page2 from './pages/page2';
-import Page3 from './pages/page3';
-import Page4 from './pages/page4';
-import Page5 from './pages/page5';
-import Page6 from './pages/page6';
-import Page7 from './pages/page7';
-import Page8 from './pages/page8';
-import Page9 from './pages/page9';
-import Page10 from './pages/page10';
-import Page11 from './pages/page11';
-import Page12 from './pages/page12';
-import Page13 from './pages/page13';
-import Page14 from './pages/page14';
-import Page15 from './pages/page15';
-import Page16 from './pages/page16';
-import Page17 from './pages/page17';
-import Page18 from './pages/page18';
-import Page19 from './pages/page19';
-import Page20 from './pages/page20';
-import Page21 from './pages/page21';
-import MediaLibrary from './pages/medialibrary';
+import React, { useState } from 'react';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState(0);
-  const [assetPageData, setAssetPageData] = useState<{
-    toolName: string;
-    mode: 'upload' | 'create';
-  } | null>(null);
+  const [page, setPage] = useState(1);
+  const [mins, setMins] = useState(90);
 
-  const handleNavigate = (page: number) => {
-    setCurrentPage(page);
-    setAssetPageData(null);
-    window.scrollTo(0, 0);
-  };
+  const next = () => { if (page < 21) setPage(page + 1); window.scrollTo(0,0); };
+  const back = () => { if (page > 1) setPage(page - 1); window.scrollTo(0,0); };
 
-  const handleOpenAssetPage = (toolName: string, mode: 'upload' | 'create') => {
-    setAssetPageData({ toolName, mode });
-    setCurrentPage(22);
-  };
+  return (
+    <div style={{ backgroundColor: '#000', minHeight: '100vh', margin: 0, padding: 0 }}>
+      
+      {/* NAVIGATION OVERLAY */}
+      <div style={{ position: 'fixed', top: '10px', width: '100%', display: 'flex', justifyContent: 'center', gap: '20px', zIndex: 100 }}>
+        <button onClick={back} style={{ background: 'rgba(0,0,0,0.6)', color: '#8a2be2', border: '1px solid #8a2be2', padding: '10px 20px', cursor: 'pointer' }}>BACK</button>
+        <button onClick={next} style={{ background: 'rgba(0,0,0,0.6)', color: '#8a2be2', border: '1px solid #8a2be2', padding: '10px 20px', cursor: 'pointer' }}>NEXT</button>
+      </div>
 
-  const pages = [
-    <Page1 onNavigate={handleNavigate} />,
-    <Page2 onNavigate={handleNavigate} />,
-    <Page3 onNavigate={handleNavigate} />,
-    <Page4 onNavigate={handleNavigate} onOpenAssetPage={handleOpenAssetPage} />,
-    <Page5 onNavigate={handleNavigate} onOpenAssetPage={handleOpenAssetPage} />,
-    <Page6 onNavigate={handleNavigate} onOpenAssetPage={handleOpenAssetPage} />,
-    <Page7 onNavigate={handleNavigate} onOpenAssetPage={handleOpenAssetPage} />,
-    <Page8 onNavigate={handleNavigate} onOpenAssetPage={handleOpenAssetPage} />,
-    <Page9 onNavigate={handleNavigate} onOpenAssetPage={handleOpenAssetPage} />,
-    <Page10 onNavigate={handleNavigate} />,
-    <Page11 onNavigate={handleNavigate} />,
-    <Page12 onNavigate={handleNavigate} />,
-    <Page13 onNavigate={handleNavigate} />,
-    <Page14 onNavigate={handleNavigate} />,
-    <Page15 onNavigate={handleNavigate} />,
-    <Page16 onNavigate={handleNavigate} />,
-    <Page17 onNavigate={handleNavigate} />,
-    <Page18 onNavigate={handleNavigate} />,
-    <Page19 onNavigate={handleNavigate} />,
-    <Page20 onNavigate={handleNavigate} />,
-    <Page21 onNavigate={handleNavigate} />,
-  ];
+      <div style={{ position: 'relative', width: '100%' }}>
+        
+        {/* VIDEO FOR PAGE 1 */}
+        {page === 1 && (
+          <video autoPlay loop muted playsInline style={{ width: '100%', display: 'block' }}>
+            <source src="/backup.mp4 (2)" type="video/mp4" />
+          </video>
+        )}
 
-  if (currentPage === 22) {
-    return <MediaLibrary />;
-  }
+        {/* YOUR 21 IMAGES - NO CHANGES */}
+        <img 
+          src={`/image${page}.png`} 
+          style={{ width: '100%', display: 'block' }} 
+          alt={`Page ${page}`} 
+        />
 
-  return pages[currentPage] || pages[0];
+        {/* SLIDER FOR PAGE 13 */}
+        {page === 13 && (
+          <div style={{ position: 'absolute', top: '55%', width: '100%', textAlign: 'center' }}>
+            <div style={{ fontSize: '10vw', fontWeight: 'bold', color: '#8a2be2', textShadow: '2px 2px #000' }}>{mins} MIN</div>
+            <input 
+              type="range" min="0" max="180" value={mins} 
+              style={{ width: '80%', cursor: 'pointer' }}
+              onChange={(e) => setMins(Number(e.target.value))} 
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
