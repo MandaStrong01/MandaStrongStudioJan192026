@@ -26,8 +26,8 @@ export default function App() {
           </video>
         )}
 
-        {/* 21 PAGE IMAGE PROJECTOR */}
         <div style={{ position: 'relative', width: '100%', maxWidth: '1400px' }}>
+          {/* IMAGE PROJECTOR */}
           <img src={`/image${page}.png`} style={{ width: '100%', display: 'block', position: 'relative', zIndex: 1 }} alt={`Page ${page}`} />
 
           {/* PRICING (Page 3) */}
@@ -55,7 +55,18 @@ export default function App() {
         </div>
       </div>
 
-      {/* STUDIO SLIDER MODAL */}
+      {/* STUDIO SLIDER */}
       {showStudio && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.97)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: '#0a0a0a', border: '3px solid #8a2be2', borderRadius: '30px', padding: '40px', width: '90%', maxWidth: '
+          <div style={{ background: '#0a0a0a', border: '3px solid #8a2be2', borderRadius: '30px', padding: '40px', width: '90%', maxWidth: '850px', textAlign: 'center' }}>
+            <h2 style={{ color: '#8a2be2', fontSize: '2.8rem', fontWeight: '900' }}>ENHANCEMENT STUDIO</h2>
+            <p style={{ fontSize: '7rem', fontWeight: '900', color: '#8a2be2' }}>{mins} MIN</p>
+            <input type="range" min="0" max="180" value={mins} onChange={(e) => setMins(Number(e.target.value))} style={{ width: '100%', accentColor: '#8a2be2' }} />
+            <br/><br/>
+            <button onClick={() => setShowStudio(false)} style={{ background: '#8a2be2', color: 'white', padding: '15px 50px', border: 'none', borderRadius: '10px' }}>CLOSE</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
