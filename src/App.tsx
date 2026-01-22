@@ -5,14 +5,14 @@ export default function App() {
   const [mins, setMins] = useState(90);
   const [showStudio, setShowStudio] = useState(false);
 
-  // Navigates Page 1 to Page 21
+  // Navigation logic to cycle from Page 1 to Page 21
   const next = () => { if (page < 21) setPage(p => p + 1); window.scrollTo(0,0); };
   const back = () => { if (page > 1) setPage(p => p - 1); window.scrollTo(0,0); };
 
   return (
     <div style={{ backgroundColor: '#000', minHeight: '100vh', margin: 0, padding: 0, color: '#fff', fontFamily: 'sans-serif' }}>
       
-      {/* TOP NAVIGATION OVERLAY */}
+      {/* 1. TOP NAVIGATION OVERLAY */}
       <div style={{ position: 'fixed', top: 0, width: '100%', display: 'flex', justifyContent: 'center', gap: '40px', padding: '15px', background: 'rgba(5,5,5,0.95)', zIndex: 1000, borderBottom: '3px solid #8a2be2' }}>
         <button onClick={back} style={{ background: '#8a2be2', color: 'white', border: 'none', padding: '12px 35px', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>BACK</button>
         <button onClick={next} style={{ background: '#8a2be2', color: 'white', border: 'none', padding: '12px 35px', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>NEXT</button>
@@ -27,16 +27,25 @@ export default function App() {
           </video>
         )}
 
+        {/* 1:1 REPLICATION OF YOUR 21 PAGES */}
         <div style={{ position: 'relative', width: '100%', maxWidth: '1400px' }}>
-          {/* THE 21 PAGES (image1.png to image21.png) */}
           <img src={`/image${page}.png`} style={{ width: '100%', display: 'block', position: 'relative', zIndex: 1 }} alt={`Page ${page}`} />
 
           {/* PAGE 3: PRICING ($20, $30, $50) */}
           {page === 3 && (
             <div style={{ position: 'absolute', bottom: '15%', width: '100%', display: 'flex', justifyContent: 'center', gap: '20px', zIndex: 50 }}>
-              <div style={{ background: '#111', border: '2px solid #8a2be2', padding: '15px', borderRadius: '12px', textAlign: 'center' }}>$20</div>
-              <div style={{ background: '#111', border: '2px solid #ff00ff', padding: '15px', borderRadius: '12px', textAlign: 'center', transform: 'scale(1.1)' }}>$30</div>
-              <div style={{ background: '#111', border: '2px solid #00ffff', padding: '15px', borderRadius: '12px', textAlign: 'center' }}>$50</div>
+              <div style={{ background: '#111', border: '2px solid #8a2be2', padding: '15px', borderRadius: '12px', textAlign: 'center', minWidth: '130px' }}>
+                <p style={{ color: '#8a2be2', margin: '0 0 5px 0', fontWeight: 'bold' }}>BASIC</p>
+                <p style={{ fontSize: '2rem', fontWeight: '900', margin: 0 }}>$20</p>
+              </div>
+              <div style={{ background: '#111', border: '2px solid #ff00ff', padding: '15px', borderRadius: '12px', textAlign: 'center', minWidth: '130px', transform: 'scale(1.1)' }}>
+                <p style={{ color: '#ff00ff', margin: '0 0 5px 0', fontWeight: 'bold' }}>PRO</p>
+                <p style={{ fontSize: '2rem', fontWeight: '900', margin: 0 }}>$30</p>
+              </div>
+              <div style={{ background: '#111', border: '2px solid #00ffff', padding: '15px', borderRadius: '12px', textAlign: 'center', minWidth: '130px' }}>
+                <p style={{ color: '#00ffff', margin: '0 0 5px 0', fontWeight: 'bold' }}>STUDIO</p>
+                <p style={{ fontSize: '2rem', fontWeight: '900', margin: 0 }}>$50</p>
+              </div>
             </div>
           )}
 
@@ -47,7 +56,7 @@ export default function App() {
             </div>
           )}
 
-          {/* PAGE 21: FINAL VIDEO */}
+          {/* PAGE 21: FINAL OUTRO VIDEO */}
           {page === 21 && (
             <video autoPlay playsInline style={{ width: '100%', position: 'absolute', top: 0, left: 0, zIndex: 10 }}>
               <source src="/thatsallfolks.mp4" type="video/mp4" />
@@ -56,7 +65,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* ENHANCEMENT STUDIO (0-180 MIN SLIDER) */}
+      {/* ENHANCEMENT STUDIO OVERLAY (0-180 MIN SLIDER) */}
       {showStudio && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.97)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ background: '#0a0a0a', border: '3px solid #8a2be2', borderRadius: '30px', padding: '40px', width: '90%', maxWidth: '850px', textAlign: 'center' }}>
