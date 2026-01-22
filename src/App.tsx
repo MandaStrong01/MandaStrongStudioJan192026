@@ -5,14 +5,14 @@ export default function App() {
   const [mins, setMins] = useState(90);
   const [showStudio, setShowStudio] = useState(false);
 
-  // Navigation logic to cycle through your 21-page design
+  // Global Navigation for the 21-page sequence
   const next = () => { if (page < 21) setPage(p => p + 1); window.scrollTo(0,0); };
   const back = () => { if (page > 1) setPage(p => p - 1); window.scrollTo(0,0); };
 
   return (
     <div style={{ backgroundColor: '#000', minHeight: '100vh', margin: 0, padding: 0, color: '#fff', fontFamily: 'sans-serif' }}>
       
-      {/* 1. TOP NAVIGATION OVERLAY */}
+      {/* 1. TOP NAVIGATION OVERLAY (Visible on all 21 pages) */}
       <div style={{ position: 'fixed', top: 0, width: '100%', display: 'flex', justifyContent: 'center', gap: '40px', padding: '15px', background: 'rgba(5,5,5,0.95)', zIndex: 1000, borderBottom: '3px solid #8a2be2' }}>
         <button onClick={back} style={{ background: '#8a2be2', color: 'white', border: 'none', padding: '12px 35px', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>BACK</button>
         <button onClick={next} style={{ background: '#8a2be2', color: 'white', border: 'none', padding: '12px 35px', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>NEXT</button>
@@ -28,7 +28,7 @@ export default function App() {
           </video>
         )}
 
-        {/* 1:1 REPLICATION OF YOUR 21 PAGES (image1.png to image21.png) */}
+        {/* REPLICATION OF YOUR 21 IMAGES (image1.png to image21.png) */}
         <div style={{ position: 'relative', width: '100%', maxWidth: '1400px' }}>
           <img 
             src={`/image${page}.png`} 
@@ -89,21 +89,4 @@ export default function App() {
                 onChange={(e) => setMins(Number(e.target.value))}
                 style={{ width: '100%', height: '20px', accentColor: '#8a2be2', cursor: 'pointer' }} 
               />
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px', color: '#888' }}>
-                <span>0 MIN</span>
-                <span>180 MIN</span>
-              </div>
-            </div>
-
-            <button onClick={() => setShowStudio(false)} style={{ background: '#8a2be2', color: 'white', padding: '15px 50px', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '900' }}>CLOSE STUDIO</button>
-          </div>
-        </div>
-      )}
-
-      {/* 4. PRODUCTION FOOTER */}
-      <div style={{ background: '#050505', padding: '45px', textAlign: 'center', borderTop: '3px solid #8a2be2', marginTop: '60px', color: '#8a2be2', fontWeight: '900' }}>
-        MANDASTRONG1 2025 ~ AUTHOR OF "DOXY THE SCHOOL BULLY" ~ MANDASTRONG1.ETSY.COM
-      </div>
-    </div>
-  );
-}
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px
