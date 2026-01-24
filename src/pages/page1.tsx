@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import AuthModal from "../components/AuthModal";
+import { useEffect, useRef } from "react";
 
 interface PageProps {
   onNavigate: (page: number) => void;
@@ -7,8 +6,6 @@ interface PageProps {
 
 export default function Page1({ onNavigate }: PageProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
   useEffect(() => {
     if (videoRef.current) {
@@ -20,16 +17,11 @@ export default function Page1({ onNavigate }: PageProps) {
     }
   }, []);
 
-  const handleAuthClick = (mode: 'login' | 'register') => {
-    setAuthMode(mode);
-    setShowAuthModal(true);
-  };
-
   return (
     <div className="relative w-screen h-screen overflow-hidden">
       <video
         ref={videoRef}
-        src="/mandastrong_avatar_background_70s.mp4"
+        src="/ocean background.mp4"
         className="absolute inset-0 w-full h-full object-cover"
         loop
         playsInline
@@ -46,13 +38,9 @@ export default function Page1({ onNavigate }: PageProps) {
 
       <div className="absolute bottom-10 w-full flex justify-center gap-6 z-10">
         <button onClick={() => onNavigate(1)} className="bg-black text-white font-bold px-8 py-3 rounded-lg hover:bg-gray-800 transition-all">Next</button>
-        <button onClick={() => handleAuthClick('login')} className="bg-black text-white font-bold px-8 py-3 rounded-lg hover:bg-gray-800 transition-all">Login</button>
-        <button onClick={() => handleAuthClick('register')} className="bg-black text-white font-bold px-8 py-3 rounded-lg hover:bg-gray-800 transition-all">Register</button>
+        <button className="bg-black text-white font-bold px-8 py-3 rounded-lg hover:bg-gray-800 transition-all">Login</button>
+        <button className="bg-black text-white font-bold px-8 py-3 rounded-lg hover:bg-gray-800 transition-all">Register</button>
       </div>
-
-      {showAuthModal && (
-        <AuthModal mode={authMode} onClose={() => setShowAuthModal(false)} />
-      )}
     </div>
   );
 }
