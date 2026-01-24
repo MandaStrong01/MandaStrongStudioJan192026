@@ -1,17 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { 
-  ChevronRight, ChevronLeft, Scissors, Play, 
-  ShieldCheck, HelpCircle, Users 
+import {
+  ChevronRight, ChevronLeft, Scissors, Play,
+  ShieldCheck, HelpCircle, Users
 } from 'lucide-react';
 
-// --- INITIALIZATION ---
-// Replace with your keys from Supabase Dashboard
-const supabase = createClient('https://your-project.supabase.co', 'your-anon-key');
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 const App = () => {
   const [page, setPage] = useState(1);
   const [duration, setDuration] = useState(90);
+  const [plans, setPlans] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    loadPlans();
+  }, []);
+
+  const loadPlans = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('subscription_plans')
+      .select('*')
+      .eq('active', true)
+      .order('price', { ascending: true });
+
+    if (data && !error) {
+      setPlans(data);
+    }
+    setLoading(false);
+  };
 
   const handleNext = () => setPage((p) => Math.min(p + 1, 21));
   const handleBack = () => setPage((p) => Math.max(p - 1, 1));
@@ -45,19 +66,27 @@ const App = () => {
 
         {/* PAGE 3: PRICING TIERS */}
         {page === 3 && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl">
-            {[
-              { name: 'BASIC', price: 20, tools: 100 },
-              { name: 'PRO', price: 30, tools: 300 },
-              { name: 'STUDIO', price: 50, tools: 720 }
-            ].map((plan) => (
-              <div key={plan.name} className="p-8 border border-purple-900 rounded-3xl bg-zinc-900/50 text-center">
-                <h3 className="text-xl font-bold mb-4">{plan.name}</h3>
-                <div className="text-5xl font-black mb-6">${plan.price}</div>
-                <p className="mb-8 opacity-60 text-sm">Access to {plan.tools} AI Tools</p>
-                <button className="w-full py-3 bg-purple-600 rounded-xl font-bold">SELECT</button>
+          <div className="w-full max-w-6xl">
+            <h2 className="text-4xl font-black mb-8 text-center">CHOOSE YOUR PLAN</h2>
+            {loading ? (
+              <div className="text-center text-purple-500">Loading plans...</div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {plans.map((plan) => (
+                  <div key={plan.id} className="p-8 border border-purple-900 rounded-3xl bg-zinc-900/50 text-center hover:border-purple-500 transition-all">
+                    <h3 className="text-xl font-bold mb-4">{plan.name.toUpperCase()}</h3>
+                    <div className="text-5xl font-black mb-6 text-purple-500">${(plan.price / 100).toFixed(0)}</div>
+                    <div className="space-y-2 mb-6 text-sm opacity-70">
+                      <p>Max Projects: {plan.max_projects}</p>
+                      <p>Storage: {plan.max_storage_gb}GB</p>
+                    </div>
+                    <button className="w-full py-3 bg-purple-600 rounded-xl font-bold hover:bg-purple-500 transition-colors">
+                      SELECT PLAN
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
         )}
 
@@ -67,10 +96,18 @@ const App = () => {
             <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
               <Scissors className="text-purple-500" /> AI ENHANCEMENT TOOLS
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-              {Array.from({ length: 30 }).map((_, i) => (
-                <button key={i} className="p-4 border border-purple-900 bg-zinc-900 rounded-xl text-[10px] text-left hover:bg-purple-900 transition-colors">
-                  TOOL_REF_{i + 720}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {[
+                'Auto Color Grade', 'Scene Detection', 'Audio Enhance', 'Noise Reduction',
+                'Smart Crop', 'Face Tracking', 'Motion Blur', 'Stabilization',
+                'Text Overlay', 'Transition FX', 'Speed Ramp', 'Green Screen',
+                'Audio Ducking', 'Beat Sync', 'Voice Isolate', 'Echo Removal',
+                'Background Blur', 'HDR Enhance', 'Film Grain', 'Vintage Look',
+                'Auto Captions', 'Scene Match', 'Color Pop', 'Lens Flare',
+                'Zoom Effect', 'Slow Motion', 'Time Lapse', 'Reverse Play'
+              ].map((tool, i) => (
+                <button key={i} className="p-4 border border-purple-900 bg-zinc-900 rounded-xl text-xs text-left hover:bg-purple-600 transition-all hover:scale-105 font-semibold">
+                  {tool}
                 </button>
               ))}
             </div>
