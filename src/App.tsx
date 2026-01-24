@@ -41,7 +41,7 @@ const App = () => {
             </h2>
             <p className="text-xl opacity-80 font-medium italic">Welcome To The All-In-One Make-A-Movie App!</p>
             <button onClick={handleNext} className="mt-8 px-12 py-4 bg-purple-600 rounded-full font-black text-lg shadow-lg shadow-purple-900/40 hover:scale-105 transition-all">
-              NEXT >
+              NEXT &gt;
             </button>
           </div>
         )}
