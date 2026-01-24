@@ -1,114 +1,125 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
-const STYLES = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@1,900&display=swap');
-  :root { --p: #8a2be2; --b: #000; --w: #fff; }
-  body { margin: 0; background: var(--b); color: var(--w); font-family: 'Inter', sans-serif; font-style: italic; font-weight: 900; text-transform: uppercase; overflow-x: hidden; }
-  .ocean-vid { position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0.4; z-index:0; }
-  .manda-border { border: 4px solid var(--p); }
-  .manda-btn { border: 4px solid var(--p); background: rgba(0,0,0,0.6); color: var(--w); padding: 15px 30px; cursor: pointer; font-size: 1.2rem; font-style: italic; font-weight: 900; text-transform: uppercase; }
-  .manda-btn:hover { background: var(--p); }
-  .slider-input { -webkit-appearance: none; width: 100%; height: 20px; background: #111; border: 2px solid var(--p); outline: none; }
-  .slider-input::-webkit-slider-thumb { -webkit-appearance: none; height: 45px; width: 45px; background: var(--p); border: 4px solid var(--w); cursor: pointer; }
-  .pro-card { background: var(--p); border: 8px solid var(--w); color: var(--b); transform: scale(1.05); }
+const CSS = `
+  body { margin: 0; background: #000; color: #fff; font-family: 'Arial Black', sans-serif; text-transform: uppercase; overflow-x: hidden; }
+  .video-bg { position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; z-index: -1; object-fit: cover; filter: brightness(0.5); }
+  
+  /* DESIGN: PURPLE & BLACK THEME */
+  .hero-title { font-size: 8.5vw; color: #000; font-weight: 900; text-align: center; margin: 0; }
+  .hero-subtitle { font-size: 2.5vw; color: #000; font-style: italic; margin-bottom: 40px; font-weight: bold; text-align: center; }
+
+  .black-btn { 
+    background: #000; color: #fff; border: 2px solid #8a2be2; 
+    padding: 15px 35px; border-radius: 10px; font-size: 1.2rem; 
+    cursor: pointer; font-weight: bold; transition: 0.3s;
+  }
+  .black-btn:hover { box-shadow: 0 0 15px #8a2be2; background: #1a1a1a; }
+  
+  .nav-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; border-bottom: 3px solid #8a2be2; background: rgba(0,0,0,0.9); position: sticky; top: 0; z-index: 100; }
+  .purple-glow { color: #8a2be2; text-shadow: 0 0 10px rgba(138, 43, 226, 0.8); }
+  .footer { position: fixed; bottom: 0; left: 0; width: 100%; padding: 15px; background: rgba(0,0,0,0.95); border-top: 4px solid #8a2be2; text-align: center; font-size: 0.8rem; z-index: 1000; font-weight: bold; }
+  
+  .pricing-grid { display: flex; gap: 20px; justify-content: center; margin-top: 40px; }
+  .p-card { border: 2px solid #333; padding: 25px; background: #0a0a0a; width: 200px; text-align: center; border-radius: 10px; }
+  .p-card.featured { border-color: #8a2be2; transform: scale(1.05); background: rgba(138,43,226,0.1); }
 `;
 
 export default function App() {
   const [page, setPage] = useState(1);
-  const [duration, setDuration] = useState(90);
+  const [view, setView] = useState('splash'); 
+  const [mins, setMins] = useState(90);
 
-  const nav = (num: number) => { setPage(num); window.scrollTo(0,0); };
+  const handleNav = (target: number) => {
+    if (target < 3) { setView('splash'); setPage(1); }
+    else if (target > 21) { setPage(21); }
+    else { setPage(target); }
+    window.scrollTo(0, 0);
+  };
 
   return (
-    <div className="manda-app">
-      <style>{STYLES}</style>
+    <div style={{ minHeight: '100vh', paddingBottom: '120px' }}>
+      <style>{CSS}</style>
+      
+      {/* BACKGROUND VIDEO: USES YOUR BACKUP FILE */}
+      <video autoPlay loop muted playsInline className="video-bg">
+        <source src="/backup.mp4 (2)" type="video/mp4" />
+      </video>
 
-      {page === 1 && (
+      {/* PAGE 1: SPLASH & AUTHENTICATION */}
+      {view === 'splash' && (
         <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <video autoPlay loop muted playsInline className="ocean-vid">
-            <source src="https://assets.mixkit.co/videos/preview/mixkit-ocean-waves-in-the-sunset-4119-large.mp4" />
-          </video>
-          <div style={{ zIndex: 1, textAlign: 'center' }}>
-            <h1 style={{ fontSize: '8vw', margin: '0' }}>MANDASTRONG STUDIO</h1>
-            <button className="manda-btn" style={{ fontSize: '2.5rem' }} onClick={() => nav(3)}>GET STARTED</button>
+          <h1 className="hero-title">MANDASTRONG'S STUDIO</h1>
+          <h2 className="hero-subtitle">Welcome To The All-In-One Make-A-Movie App!</h2>
+          <div style={{display:'flex', gap:'20px'}}>
+            <button className="black-btn" onClick={() => setView('login')}>Login</button>
+            <button className="black-btn" onClick={() => setView('register')}>Register</button>
+            <button className="black-btn" onClick={() => { setView('app'); setPage(3); }}>👁 Browse as Guest</button>
+          </div>
+          <p style={{marginTop: '20px', color: '#000', fontWeight: 'bold'}}>Explore the platform without an account</p>
+        </div>
+      )}
+
+      {/* LOGIN VIEW */}
+      {view === 'login' && (
+        <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{background:'rgba(0,0,0,0.85)', padding:'40px', border:'3px solid #8a2be2', borderRadius:'20px', textAlign:'center'}}>
+            <h2 className="purple-glow">Login</h2>
+            <input style={{display:'block', margin:'10px auto', padding:'12px', background:'#111', border:'1px solid #8a2be2', color:'#fff', borderRadius:'8px'}} type="email" placeholder="Email" />
+            <input style={{display:'block', margin:'10px auto', padding:'12px', background:'#111', border:'1px solid #8a2be2', color:'#fff', borderRadius:'8px'}} type="password" placeholder="Password" />
+            <button className="black-btn" style={{marginTop:'20px', width:'100%'}} onClick={() => { setView('app'); setPage(3); }}>Login</button>
+            <button style={{background:'none', border:'none', color:'#8a2be2', marginTop:'15px', cursor:'pointer', fontWeight:'bold'}} onClick={()=>setView('splash')}>← Back</button>
           </div>
         </div>
       )}
 
-      {page === 3 && (
-        <div style={{ padding: '60px 20px', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '5rem', marginBottom: '60px' }}>SELECT PLAN</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '40px', maxWidth: '1300px', margin: '0 auto' }}>
-            <div className="manda-border" style={{ padding: '40px' }}>
-              <h3 style={{ fontSize: '2.5rem' }}>BASIC</h3>
-              <div style={{ fontSize: '6rem', color: 'var(--p)' }}>$20</div>
-              <button className="manda-btn" style={{ width: '100%' }} onClick={() => nav(11)}>SELECT</button>
-            </div>
-            <div className="pro-card" style={{ padding: '40px' }}>
-              <h3 style={{ fontSize: '2.5rem' }}>PRO</h3>
-              <div style={{ fontSize: '6rem' }}>$40</div>
-              <button className="manda-btn" style={{ width: '100%', background: 'black', border: 'none' }} onClick={() => nav(11)}>SELECT</button>
-            </div>
-            <div className="manda-border" style={{ padding: '40px' }}>
-              <h3 style={{ fontSize: '2.5rem' }}>STUDIO</h3>
-              <div style={{ fontSize: '6rem', color: 'var(--p)' }}>$80</div>
-              <button className="manda-btn" style={{ width: '100%' }} onClick={() => nav(11)}>SELECT</button>
+      {/* MAIN STUDIO AREA (PAGES 3-21) */}
+      {view === 'app' && (
+        <>
+          <div className="nav-header">
+            <span className="purple-glow">MANDASTRONG STUDIO</span>
+            <div>
+              <button className="black-btn" style={{padding:'5px 15px', fontSize:'0.7rem'}} onClick={() => handleNav(page - 1)}>BACK</button>
+              <button className="black-btn" style={{padding:'5px 15px', fontSize:'0.7rem', marginLeft:'10px'}} onClick={() => handleNav(page + 1)}>NEXT</button>
             </div>
           </div>
-        </div>
+
+          <div style={{ padding: '40px', textAlign: 'center' }}>
+            {/* PAGE 3: PRICING TIERS 20-30-50 */}
+            {page === 3 && (
+              <div className="pricing-grid">
+                <div className="p-card"><h3>BASIC</h3><h2 className="purple-glow">$20</h2><button className="black-btn" style={{fontSize:'0.8rem', marginTop:'10px'}} onClick={()=>handleNav(4)}>Select</button></div>
+                <div className="p-card featured"><h3>PRO</h3><h2 className="purple-glow">$30</h2><button className="black-btn" style={{fontSize:'0.8rem', marginTop:'10px'}} onClick={()=>handleNav(4)}>Select</button></div>
+                <div className="p-card"><h3>STUDIO</h3><h2 className="purple-glow">$50</h2><button className="black-btn" style={{fontSize:'0.8rem', marginTop:'10px'}} onClick={()=>handleNav(4)}>Select</button></div>
+              </div>
+            )}
+
+            {/* AUTOMATED IMAGE SLOTS (PAGES 4-21) */}
+            {page > 3 && page <= 21 && (
+              <div style={{maxWidth: '900px', margin: '0 auto', border: '3px solid #8a2be2', background:'#000'}}>
+                <img src={`/image${page}.png`} style={{width: '100%', display: 'block'}} alt={`Page ${page}`} />
+                
+                {/* PAGE 13: ENHANCEMENT STUDIO SLIDER */}
+                {page === 13 && (
+                  <div style={{padding: '40px', background: '#000'}}>
+                    <h1 className="purple-glow">ENHANCEMENT STUDIO</h1>
+                    <div style={{fontSize:'8rem', color: '#8a2be2'}}>{mins} MIN</div>
+                    <input 
+                      type="range" min="0" max="180" value={mins} 
+                      style={{width: '80%', cursor:'pointer'}} 
+                      onChange={(e) => setMins(Number(e.target.value))} 
+                    />
+                    <div style={{display:'flex', justifyContent:'space-between', width:'80%', margin:'0 auto', fontWeight:'bold'}}><span>0 MIN</span><span>180 MIN</span></div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </>
       )}
 
-      {page === 11 && (
-        <div style={{ padding: '40px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
-            <h2 style={{ fontSize: '4rem', borderLeft: '15px solid var(--p)', paddingLeft: '20px' }}>EDITOR SUITE</h2>
-            <div style={{ display: 'flex', gap: '20px' }}>
-              <button className="manda-btn" style={{ background: 'var(--w)', color: 'var(--b)' }} onClick={() => nav(12)}>MEDIA LIBRARY</button>
-              <button className="manda-btn" style={{ background: 'var(--p)', border: '4px solid var(--w)' }} onClick={() => nav(13)}>OPEN ENHANCEMENT EDITOR</button>
-            </div>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr', gap: '30px' }}>
-            <div className="manda-border" style={{ height: '60vh', background: '#080808', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ fontSize: '3rem', opacity: 0.2 }}>SIGNAL_PREVIEW_4K</span>
-            </div>
-            <div className="manda-border" style={{ padding: '20px' }}>
-              <h3 style={{ borderBottom: '4px solid var(--p)', marginBottom: '20px' }}>TOOLS</h3>
-              {['CUT', 'TRIM', 'SPLIT', 'FX', 'AUDIO', 'RENDER'].map(t => (
-                <button key={t} className="manda-btn" style={{ width: '100%', marginBottom: '10px' }}>{t}</button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {page === 12 && (
-        <div style={{ padding: '40px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
-            <h2 style={{ fontSize: '4rem' }}>MEDIA LIBRARY</h2>
-            <button className="manda-btn" onClick={() => nav(11)}>BACK</button>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="manda-border" style={{ aspectRatio: '1/1', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '5rem' }}>📁</div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {page === 13 && (
-        <div style={{ padding: '80px', textAlign: 'center', maxWidth: '1000px', margin: '0 auto' }}>
-          <h2 style={{ fontSize: '5rem', color: 'var(--p)', marginBottom: '40px' }}>ENHANCEMENT STUDIO</h2>
-          <div className="manda-border" style={{ padding: '80px', background: '#050505' }}>
-            <h3 style={{ fontSize: '2.5rem', marginBottom: '30px' }}>DURATION CONTROL</h3>
-            <div style={{ fontSize: '12rem', color: 'var(--p)', lineHeight: '1' }}>{duration} <span style={{ fontSize: '3rem', color: 'var(--w)' }}>MIN</span></div>
-            <input type="range" min="0" max="180" value={duration} className="slider-input" onChange={(e) => setDuration(parseInt(e.target.value))} />
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '30px', fontSize: '2rem', opacity: 0.4 }}>
-              <span>0 MIN</span><span>180 MIN</span>
-            </div>
-          </div>
-          <button className="manda-btn" style={{ marginTop: '60px', fontSize: '2rem' }} onClick={() => nav(11)}>RETURN TO EDITOR</button>
-        </div>
-      )}
+      <div className="footer">
+        MANDASTRONG1 2025 ~ AUTHOR OF "DOXY THE SCHOOL BULLY" ~ SHOP AT MANDASTRONG1.ETSY.COM
+      </div>
     </div>
   );
 }
