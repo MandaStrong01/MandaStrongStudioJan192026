@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Sparkles, Film, Play, Bot, Zap, Upload, Menu, Check, ChevronRight, Music, Settings, Layers, X } from 'lucide-react';
 
