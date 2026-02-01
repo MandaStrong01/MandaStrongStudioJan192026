@@ -1,180 +1,312 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Sparkles, Film, Play, Bot, Zap, Upload, Menu, Check, ChevronRight, Search, X, Music, Settings, Layers } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import {
+  Sparkles, Menu, Search, Play, MessageCircle, Film, Music,
+  Video, Mic, Zap, Clock, Upload, Database,
+  Sliders, Layers, Palette, Download, Youtube, Twitter, Instagram,
+  Facebook, BookOpen, Shield, Heart, ChevronRight, ChevronLeft,
+  Home, Settings, Check, Headphones, Volume2, FileVideo, TrendingUp
+} from "lucide-react";
+
+// ---------------------------------------------------------------------------
+// UTILITIES
+// ---------------------------------------------------------------------------
+
+const generateTools = (baseTools: string[]) => {
+  const tools = [];
+  for (let i = 0; i < 120; i++) {
+    const base = baseTools[i % baseTools.length];
+    const suffix = i >= baseTools.length ? ` PRO ${Math.floor(i / baseTools.length)}` : "";
+    tools.push(`${base}${suffix}`);
+  }
+  return tools;
+};
+
+const TOOL_BOARDS = {
+  Writing: generateTools([
+    "Dialogue Writer", "Plot Generator", "Scene Writer", "Story Outliner",
+    "Character Developer", "Dialogue Editor", "Plot Designer", "Story Planner",
+    "Treatment Writer", "Script Formatter", "Plot Creator", "Three Act Builder"
+  ]),
+  Voice: generateTools([
+    "Voice Maker", "Voice Cloner", "Voice Creator Tool", "Voice Recorder",
+    "Speech Converter", "Voice Builder", "Advanced Voice Generator", "Voice Studio Tool",
+    "Premium Voice Generator", "Voice Audio Tool", "Emotional Voice Generator", "Advanced Speech Creator"
+  ]),
+  Image: generateTools([
+    "Image Creator", "Advanced Image Generator", "Design Generator", "Image Tool",
+    "Art Maker", "Art Mixer", "Image Stream Tool", "Art Library Tool",
+    "Workflow Tool", "Auto Image Generator", "Image Studio Pro", "Easy Image Generator"
+  ]),
+  Video: generateTools([
+    "Motion Video Maker", "Video Creator", "Avatar Generator", "Video Synthesizer",
+    "Video Studio", "Video Flow Generator", "Video Creator Studio", "Video Crafter",
+    "Image to Motion Tool", "Video Style Tool", "Temporal Flow Tool", "Frame Blender"
+  ]),
+  Motion: generateTools([
+    "Motion Animator", "Motion Studio", "Auto Animator", "Motion Flow Tool",
+    "Motion Capture Pro", "Webcam Motion Tool", "Skeleton Tracker", "Joint Tracker",
+    "Character Rigger", "3D Character Studio", "Player Avatar Creator", "Avatar Generator"
+  ]),
+  Editing: generateTools([
+    "Smart Video Editor", "Auto Editor", "Video Tools Suite", "Edit Master",
+    "Scene Detector", "Beat Syncer", "Auto Assembly Tool", "Smart Timeline",
+    "Highlight Finder", "Key Moment Finder", "Context Editor", "Intelligent Cutter"
+  ])
+};
+
+const ENHANCEMENT_TOOLS = [
+  "AI Upscaling", "Noise Reduction", "Stabilization", "Color Enhancement",
+  "Audio Enhancement", "Frame Interpolation", "Sharpening", "Deblur",
+  "HDR Tone Mapping", "Face Enhancement", "Auto Crop", "Smart Zoom",
+  "Background Removal", "Object Removal", "Sky Replacement", "Style Transfer",
+  "Auto Color Grade", "Slow Motion", "Time Lapse", "Motion Blur",
+  "Depth of Field", "Vignette", "Grain Removal", "Contrast Boost",
+  "Saturation Boost", "Exposure Fix", "White Balance", "Shadow Recovery",
+  "Highlight Recovery", "Detail Enhancement"
+];
+
+// ---------------------------------------------------------------------------
+// MAIN APP
+// ---------------------------------------------------------------------------
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [email, setEmail] = useState('');
-  const [movieDuration, setMovieDuration] = useState(90);
-  const [searchQuery, setSearchQuery] = useState('');
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const thatsAllFolksRef = useRef<HTMLVideoElement>(null);
+  const [page, setPage] = useState(1);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [duration, setDuration] = useState(90);
+  const [selectedPlan, setSelectedPlan] = useState("studio");
 
-  // OWNER/ADMIN BYPASS LOGIC
-  const handleLogin = () => {
-    if (email.toLowerCase() === 'woolleya129@gmail.com') {
-      setCurrentPage(11); // Immediate access to Editor Suite
-    } else {
-      setCurrentPage(4);
-    }
+  // Stripe checkout URLs
+  const STRIPE_PLANS = {
+    basic: "https://buy.stripe.com/test_basic20plan",
+    pro: "https://buy.stripe.com/test_pro30plan",
+    studio: "https://buy.stripe.com/test_studio50plan"
   };
 
-  useEffect(() => {
-    if (currentPage === 1 && videoRef.current) {
-      videoRef.current.play().catch(() => {});
-    }
-  }, [currentPage]);
+  const handlePayment = () => {
+    const planUrl = STRIPE_PLANS[selectedPlan] || STRIPE_PLANS.studio;
+    window.location.href = planUrl;
+  };
 
-  // NAVIGATION COMPONENTS
-  const NavButtons = ({ prev, next }: { prev: number; next: number }) => (
-    <div className="flex justify-center gap-6 mt-12 mb-20">
-      <button onClick={() => setCurrentPage(prev)} className="bg-purple-800 hover:bg-purple-700 text-white px-12 py-4 rounded-2xl font-bold border-2 border-purple-500 transition-all">← Back</button>
-      <button onClick={() => setCurrentPage(next)} className="bg-purple-600 hover:bg-purple-500 text-white px-16 py-4 rounded-2xl font-bold transition-all">Next →</button>
-    </div>
-  );
+  // Always unlock Studio Master
+  useEffect(() => setSelectedPlan("studio"), []);
 
-  const QuickAccess = () => (
-    <div className="fixed top-6 right-6 z-50 group">
-      <button className="bg-purple-600 p-4 rounded-full shadow-2xl hover:scale-110 transition-all flex items-center gap-2">
-        <Menu size={24} /> <span className="font-bold hidden group-hover:block">Quick Access</span>
+  useEffect(() => window.scrollTo(0, 0), [page]);
+
+  const goTo = (p: number) => {
+    setPage(p);
+    setMenuOpen(false);
+  };
+
+  // -------------------------------------------------------------------------
+  // COMPONENTS
+  // -------------------------------------------------------------------------
+
+  const QuickAccessMenu = () => (
+    <div className="fixed top-8 right-6 z-50">
+      <button
+        onClick={() => setMenuOpen(!menuOpen)}
+        className="bg-purple-600 hover:bg-purple-500 px-6 py-3 rounded-full font-black uppercase text-white flex items-center gap-2 shadow-lg transition-all"
+      >
+        <Menu size={20} /> Quick Access
       </button>
+      {menuOpen && (
+        <div className="absolute top-16 right-0 bg-black border-2 border-purple-600 rounded-2xl p-4 w-64 shadow-2xl">
+          {[
+            { page: 1, label: "Home" },
+            { page: 4, label: "AI Hub" },
+            { page: 12, label: "Editor Suite" },
+            { page: 16, label: "Export" },
+            { page: 17, label: "Tutorials" },
+            { page: 19, label: "Help Desk" },
+            { page: 21, label: "Finish" }
+          ].map((item) => (
+            <button
+              key={item.page}
+              onClick={() => goTo(item.page)}
+              className="text-left text-xs font-bold text-purple-400 px-4 py-2 hover:bg-purple-600 hover:text-white rounded-lg transition"
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 
-  const GrokBubble = () => (
-    <button onClick={() => setCurrentPage(19)} className="fixed bottom-8 right-8 bg-purple-600 w-20 h-20 rounded-full flex items-center justify-center shadow-2xl z-50 hover:scale-110 transition-all border-2 border-purple-400">
-      <Bot size={32} className="text-white" />
-    </button>
+  const Footer = () =>
+    page >= 3 && (
+      <div className="fixed bottom-0 left-0 right-0 bg-black/90 py-3 text-center text-white text-xs md:text-sm font-black uppercase z-40 border-t border-purple-900/30">
+        <p>
+          MandaStrong Studio 2025 • Author of Doxy The School Bully • MandaStrong1.Etsy.com
+        </p>
+      </div>
+    );
+
+  const Navigation = () =>
+    page >= 2 && page <= 21 ? (
+      <div className="fixed bottom-20 left-0 right-0 z-50 flex justify-center gap-6">
+        {page > 1 && (
+          <button
+            onClick={() => setPage(page - 1)}
+            className="bg-purple-600 hover:bg-purple-500 px-10 py-3 rounded-full font-black uppercase text-white shadow-lg flex items-center gap-2"
+          >
+            <ChevronLeft size={20} /> Back
+          </button>
+        )}
+        {page < 21 && (
+          <button
+            onClick={() => setPage(page + 1)}
+            className="bg-purple-600 hover:bg-purple-500 px-10 py-3 rounded-full font-black uppercase text-white shadow-lg flex items-center gap-2"
+          >
+            Next <ChevronRight size={20} />
+          </button>
+        )}
+      </div>
+    ) : null;
+
+  const ToolBoard = ({ title, tools }: { title: string; tools: string[] }) => (
+    <div className="min-h-screen bg-black text-white p-6 pb-32">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-5xl font-black uppercase text-purple-500 mb-12">
+          {title} BOARD
+        </h1>
+        <div className="grid grid-cols-2 gap-4">
+          {tools.map((tool, i) => (
+            <div
+              key={i}
+              className="bg-gray-900/50 border-2 border-purple-900/30 rounded-xl p-4 flex items-center gap-3 hover:border-purple-600 hover:bg-gray-900 transition cursor-pointer"
+            >
+              <Sparkles size={20} className="text-purple-500" />
+              <span className="font-bold text-sm">{tool}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case 1: // LANDING
-        return (
-          <div className="min-h-screen relative flex flex-col items-center justify-center overflow-hidden">
-            <video ref={videoRef} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover">
-              <source src="background__2_.mp4" type="video/mp4" />
-            </video>
-            <QuickAccess />
-            <div className="relative z-10 text-center px-4">
-              <h1 className="text-6xl md:text-9xl font-black mb-4 text-black italic tracking-tighter" style={{ fontFamily: 'Impact, sans-serif' }}>MANDASTRONG'S STUDIO</h1>
-              <p className="text-2xl md:text-4xl mb-32 text-black font-bold italic">Welcome To The All-In-One Make-A-Movie App!</p>
-              <div className="flex gap-6 justify-center">
-                <button onClick={() => setCurrentPage(2)} className="bg-black text-white px-16 py-5 rounded-2xl font-bold text-xl shadow-2xl">Next</button>
-                <button onClick={() => setCurrentPage(3)} className="bg-black text-white px-16 py-5 rounded-2xl font-bold text-xl shadow-2xl">Login</button>
-                <button onClick={() => setCurrentPage(3)} className="bg-black text-white px-16 py-5 rounded-2xl font-bold text-xl shadow-2xl">Register</button>
+  // -------------------------------------------------------------------------
+  // PAGES
+  // -------------------------------------------------------------------------
+
+  return (
+    <div className="min-h-screen bg-black text-white overflow-x-hidden">
+      <QuickAccessMenu />
+      <Footer />
+      <Navigation />
+
+      {/* PAGE 1 – HOME */}
+      {page === 1 && (
+        <div className="min-h-screen bg-gradient-to-br from-purple-900 via-black to-purple-900 flex flex-col justify-center items-center text-center px-4">
+          <Sparkles size={80} className="text-purple-400 mb-8" />
+          <h1 className="text-6xl md:text-8xl font-black uppercase text-purple-300 mb-6">
+            MANDASTRONG STUDIO
+          </h1>
+          <p className="text-xl md:text-3xl font-black text-purple-200 mb-10">
+            The All-In-One Movie Maker ~ Create Up To 3 Hours of Magic!
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <button
+              onClick={() => setPage(2)}
+              className="bg-purple-600 hover:bg-purple-500 px-10 py-3 rounded-xl text-xl font-black text-white"
+            >
+              Next
+            </button>
+            <button
+              onClick={() => setPage(3)}
+              className="bg-purple-800 hover:bg-purple-700 px-10 py-3 rounded-xl text-xl font-black text-white"
+            >
+              Login / Register
+            </button>
+            <button
+              onClick={() => setPage(4)}
+              className="bg-gray-800 hover:bg-gray-700 px-10 py-3 rounded-xl text-xl font-black text-white"
+            >
+              Browse Tools
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* PAGE 3 – PRICING */}
+      {page === 3 && (
+        <div className="min-h-screen bg-black p-8 pb-32 overflow-y-auto">
+          <h2 className="text-5xl font-black text-center mb-10">Select Your Plan</h2>
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {[
+              { name: "Basic", price: "20", features: ["HD Export", "100 AI Tools", "10 GB Storage", "Email Support"] },
+              { name: "Pro", price: "30", features: ["4K Export", "300 AI Tools", "100 GB Storage", "Priority Support"], popular: true },
+              { name: "Studio", price: "50", features: ["8K Export", "All 600 AI Tools", "1 TB Storage", "24/7 Live Support", "Full Commercial Rights"] }
+            ].map((plan) => (
+              <div
+                key={plan.name}
+                onClick={() => setSelectedPlan(plan.name.toLowerCase())}
+                className={`border-4 rounded-3xl p-8 cursor-pointer transition ${
+                  selectedPlan === plan.name.toLowerCase() || plan.popular
+                    ? "border-yellow-400 scale-105"
+                    : "border-purple-900"
+                }`}
+              >
+                {plan.popular && (
+                  <div className="bg-purple-600 px-4 py-1 rounded-full text-sm font-black mb-4 inline-block">
+                    POPULAR
+                  </div>
+                )}
+                <h3 className="text-3xl font-black mb-2">{plan.name}</h3>
+                <p className="text-5xl font-black mb-6">
+                  ${plan.price}
+                  <span className="text-2xl">/mo</span>
+                </p>
+                <ul className="space-y-2">
+                  {plan.features.map((f) => (
+                    <li key={f} className="text-sm text-gray-300 flex items-center gap-2">
+                      <Check size={16} className="text-purple-400" /> {f}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
-            <GrokBubble />
+            ))}
           </div>
-        );
 
-      case 3: // LOGIN & UPDATED PLANS
-        return (
-          <div className="min-h-screen bg-black text-white p-8">
-            <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto mb-20">
-              <div className="bg-purple-900/20 border-2 border-purple-600 rounded-3xl p-10">
-                <h2 className="text-3xl font-bold mb-8 italic uppercase">Login</h2>
-                <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="woolleya129@gmail.com" className="w-full bg-black border-2 border-purple-600 rounded-xl p-4 mb-4 text-white" />
-                <button onClick={handleLogin} className="w-full bg-purple-600 py-4 rounded-xl font-bold text-xl">Login</button>
+          <div className="text-center mt-12">
+            <button
+              onClick={handlePayment}
+              className="bg-purple-600 hover:bg-purple-500 px-16 py-5 rounded-xl font-black text-2xl uppercase"
+            >
+              Continue to Payment
+            </button>
+            <p className="text-gray-400 mt-4">
+              Secure payment powered by Stripe
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* TOOL BOARDS */}
+      {page === 5 && <ToolBoard title="WRITING" tools={TOOL_BOARDS.Writing} />}
+      {page === 6 && <ToolBoard title="VOICE" tools={TOOL_BOARDS.Voice} />}
+      {page === 7 && <ToolBoard title="IMAGE" tools={TOOL_BOARDS.Image} />}
+      {page === 8 && <ToolBoard title="VIDEO" tools={TOOL_BOARDS.Video} />}
+      {page === 9 && <ToolBoard title="MOTION" tools={TOOL_BOARDS.Motion} />}
+
+      {/* PAGE 12 – AI ENHANCEMENT GRID */}
+      {page === 12 && (
+        <div className="min-h-screen bg-black p-8 pb-32">
+          <h1 className="text-5xl font-black uppercase text-purple-500 mb-8">
+            AI Enhancement Studio
+          </h1>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {ENHANCEMENT_TOOLS.map((tool, i) => (
+              <div
+                key={i}
+                className="bg-gray-900/50 border-2 border-purple-600/30 rounded-xl p-3 text-center text-sm font-bold hover:bg-purple-900/30 transition"
+              >
+                {tool}
               </div>
-              <div className="bg-purple-900/20 border-2 border-purple-600 rounded-3xl p-10"><h2 className="text-3xl font-bold mb-8 italic uppercase text-center">Register</h2><button className="w-full bg-purple-600 py-4 rounded-xl font-bold text-xl">Create Account</button></div>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto pt-10 border-t border-purple-900/40">
-              <div className="border-2 border-purple-600 p-8 rounded-3xl text-center"><h3 className="text-2xl font-bold mb-4">Basic</h3><p className="text-5xl font-black mb-6">$20<span className="text-lg text-gray-500">/mo</span></p><button className="w-full bg-gray-700 py-3 rounded-xl font-bold">Select</button></div>
-              <div className="border-2 border-yellow-400 p-8 rounded-3xl text-center relative bg-purple-950/30 shadow-2xl shadow-yellow-500/10"><div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-purple-600 px-6 py-1 rounded-full text-xs font-bold uppercase">Popular</div><h3 className="text-2xl font-bold mb-4">Pro</h3><p className="text-5xl font-black mb-6">$30<span className="text-lg text-gray-400">/mo</span></p><button className="w-full bg-yellow-500 text-black py-3 rounded-xl font-bold">✓ SELECTED</button></div>
-              <div className="border-2 border-purple-600 p-8 rounded-3xl text-center"><h3 className="text-2xl font-bold mb-4">Studio</h3><p className="text-5xl font-black mb-6">$50<span className="text-lg text-gray-400">/mo</span></p><button className="w-full bg-gray-700 py-3 rounded-xl font-bold">Select</button></div>
-            </div>
-            <NavButtons prev={2} next={4} />
+            ))}
           </div>
-        );
-
-      case 4: // TOOL BOARD WITH SEARCH
-        return (
-          <div className="min-h-screen bg-black text-white p-8">
-            <div className="flex justify-between items-center mb-10">
-              <div className="relative w-96">
-                <Search className="absolute left-4 top-4 text-gray-500" size={20} />
-                <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search Tools..." className="w-full bg-gray-900 border-2 border-purple-600 rounded-xl py-3 pl-12 pr-4 focus:border-purple-400" />
-              </div>
-              <h1 className="text-4xl font-bold text-purple-500 italic uppercase">AI Tool Board</h1>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-6xl mx-auto">
-              {['Dialogue Writer', 'Plot Generator', 'Scene Writer', 'Story Outliner', 'Voice Maker', 'Image Creator'].map((t, i) => (
-                <button key={i} className="bg-gray-900 border-2 border-purple-600 p-6 rounded-2xl flex items-center gap-4 hover:border-purple-400 transition-all">
-                  <Sparkles size={24} className="text-purple-400" /> <span className="font-bold">{t}</span>
-                </button>
-              ))}
-            </div>
-            <NavButtons prev={3} next={5} />
-          </div>
-        );
-
-      case 12: // MEDIA LIBRARY + OPEN BUTTON
-        return (
-          <div className="min-h-screen bg-black text-white p-10">
-            <div className="flex justify-between items-center mb-10">
-              <h1 className="text-3xl font-bold text-purple-500 italic uppercase">Media Library</h1>
-              <button onClick={() => setCurrentPage(13)} className="bg-blue-600 hover:bg-blue-500 px-8 py-3 rounded-xl font-bold shadow-2xl flex items-center gap-2 border-2 border-blue-400">
-                <Play size={20} fill="white" /> Open Enhancement Studio
-              </button>
-            </div>
-            <div className="h-[50vh] bg-gray-900 border-2 border-dashed border-purple-900/50 rounded-3xl flex flex-col items-center justify-center opacity-50 italic text-gray-500">
-              Professional Assets Loading...
-            </div>
-            <NavButtons prev={11} next={14} />
-          </div>
-        );
-
-      case 13: // ENHANCEMENT STUDIO (3-HOUR CAPACITY)
-        return (
-          <div className="min-h-screen bg-black text-white p-10 flex flex-col">
-            <h1 className="text-4xl font-black mb-8 text-purple-500 italic uppercase tracking-widest underline decoration-purple-600 underline-offset-8">Enhancement Studio</h1>
-            <div className="flex-1 grid md:grid-cols-2 gap-12">
-              <div className="bg-gray-900 border-2 border-purple-600 rounded-3xl flex items-center justify-center relative shadow-2xl">
-                <Play size={100} className="text-purple-600 opacity-30" />
-                <div className="absolute top-4 left-4 bg-purple-600 px-4 py-1 rounded-lg text-xs font-black uppercase">Real-Time Viewer Active</div>
-              </div>
-              <div className="bg-gray-950 p-12 rounded-3xl border border-purple-900/40">
-                <label className="text-2xl font-black block mb-10 italic text-purple-400 uppercase">Adjust Film Duration</label>
-                <input type="range" min="0" max="180" value={movieDuration} onChange={(e) => setMovieDuration(parseInt(e.target.value))} className="w-full h-4 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-purple-600" />
-                <div className="flex justify-between mt-10 text-5xl font-black text-white">
-                  <span>{movieDuration} MIN</span>
-                  <span className="text-gray-600 text-lg uppercase">180 MIN Limit</span>
-                </div>
-                <div className="grid grid-cols-2 gap-6 mt-16">
-                  <button className="bg-gray-900 border border-purple-900 p-6 rounded-2xl font-bold hover:bg-purple-900/20">Color Grading</button>
-                  <button className="bg-gray-900 border border-purple-900 p-6 rounded-2xl font-bold hover:bg-purple-900/20">Audio Mixer</button>
-                </div>
-              </div>
-            </div>
-            <div className="flex justify-center mt-12 gap-8">
-              <button onClick={() => setCurrentPage(12)} className="bg-gray-800 px-16 py-4 rounded-xl font-bold border border-gray-600">Close Studio</button>
-              <button onClick={() => setCurrentPage(21)} className="bg-purple-600 px-24 py-5 rounded-xl font-bold text-2xl shadow-xl hover:scale-105 transition-all">RENDER MASTERPIECE</button>
-            </div>
-          </div>
-        );
-
-      case 21: // FINALE
-        return (
-          <div className="min-h-screen bg-black text-white p-10 flex flex-col items-center justify-center text-center">
-            <h1 className="text-7xl md:text-9xl font-black mb-12 text-purple-500 italic uppercase tracking-tighter">THAT'S ALL FOLKS!</h1>
-            <div className="bg-purple-900/40 border-2 border-purple-600 rounded-3xl p-16 max-w-4xl shadow-2xl backdrop-blur-xl">
-              <p className="text-2xl text-gray-300 italic mb-10">Supporting Veterans Mental Health & School Safety Initiatives through Cinematic Expression.</p>
-              <button onClick={() => window.open('https://MandaStrong1.Etsy.com')} className="bg-purple-600 px-16 py-5 rounded-2xl font-bold text-xl uppercase tracking-tighter shadow-lg hover:bg-purple-500">Visit Etsy Store</button>
-            </div>
-            <button onClick={() => setCurrentPage(1)} className="mt-16 bg-green-600 px-24 py-6 rounded-2xl font-bold text-2xl border-2 border-green-400 hover:bg-green-500 transition-all uppercase italic">🏠 Home</button>
-          </div>
-        );
-
-      default:
-        return (
-          <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
-            <h1 className="text-4xl font-bold text-purple-500 uppercase italic">Module {currentPage}</h1>
-            <NavButtons prev={currentPage - 1} next={currentPage + 1} />
-          </div>
-        );
-    }
-  };
-
-  return <div className="app bg-black min-h-screen font-sans selection:bg-purple-500">{renderPage()}</div>;
+        </div>
+      )}
+    </div>
+  );
 }
