@@ -7,8 +7,7 @@ import {
   Home, Settings, User, Check, Headphones, Volume2, Eye, FileVideo,
   TrendingUp, Camera, CheckCircle, Crown, LogOut
 } from 'lucide-react';
-import MandaStrongStudioPro from './components/MandaStrongStudioPro';
-import AIToolInterface from './components/AIToolInterface';
+
 
 const generateTools = (baseTools: string[]) => {
   const tools = [];
@@ -97,10 +96,6 @@ export default function App() {
     return <SplashPage onContinue={() => setShowSplash(false)} />;
   }
 
-  if (showProStudio) {
-    return <MandaStrongStudioPro />;
-  }
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [page]);
@@ -122,7 +117,7 @@ export default function App() {
         <div className="absolute top-14 right-0 bg-zinc-900 border border-zinc-700 rounded-lg p-2 w-64 shadow-2xl backdrop-blur-xl">
           <div className="flex flex-col gap-1">
             <button
-              onClick={() => { setShowProStudio(true); setMenuOpen(false); }}
+              onClick={() => { setPage(4); setMenuOpen(false); }}
               className="text-left text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 px-4 py-2.5 rounded-md transition"
             >
               Pro Studio
@@ -262,7 +257,7 @@ export default function App() {
 
             <div className="flex flex-col gap-4 mb-8">
               <button
-                onClick={() => setShowProStudio(true)}
+                onClick={() => setPage(4)}
                 className="bg-blue-600 hover:bg-blue-700 px-12 py-4 rounded-lg text-lg font-semibold text-white transition shadow-lg"
               >
                 Launch Pro Studio
@@ -739,14 +734,6 @@ export default function App() {
             </div>
           </div>
         </div>
-      )}
-
-      {/* AI TOOL INTERFACE MODAL */}
-      {selectedTool && (
-        <AIToolInterface
-          tool={selectedTool}
-          onClose={() => setSelectedTool(null)}
-        />
       )}
     </div>
   );
